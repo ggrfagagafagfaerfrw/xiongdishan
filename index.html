@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>兄弟山 · 人格档案</title>
+<style>
+:root{--ink:#0d1211;--paper:#e8e2d2;--paper-dim:#a9a294;--moss-l:#6d8570;--torii:#a8452f;--torii-l:#c9624a;--gold:#c9a961;--line:rgba(232,226,210,.14)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(1200px 700px at 50% -10%,#1b2723 0%,#101715 45%,#0a0f0e 100%),var(--ink);
+  color:var(--paper);font-family:"Songti SC","Noto Serif SC","Source Han Serif SC",Songti,SimSun,Georgia,serif;line-height:1.75;overflow-x:hidden;min-height:100%}
+.fog{position:fixed;inset:-20%;pointer-events:none;z-index:0;opacity:.5}
+.fog i{position:absolute;display:block;border-radius:50%;filter:blur(60px);
+  background:radial-gradient(circle at 50% 50%,rgba(140,170,150,.22),rgba(140,170,150,0) 65%);animation:drift 46s linear infinite}
+.fog i:nth-child(1){width:70vw;height:40vh;left:-10vw;top:8vh;animation-duration:58s}
+.fog i:nth-child(2){width:60vw;height:34vh;left:40vw;top:40vh;animation-duration:72s;animation-direction:reverse}
+.fog i:nth-child(3){width:50vw;height:30vh;left:10vw;top:65vh;animation-duration:64s}
+@keyframes drift{0%{transform:translate3d(-4%,0,0) scale(1)}50%{transform:translate3d(6%,-3%,0) scale(1.08)}100%{transform:translate3d(-4%,0,0) scale(1)}}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.055;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='120' height='120' filter='url(%23n)'/></svg>");mix-blend-mode:screen}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(120% 80% at 50% 45%,transparent 40%,rgba(0,0,0,.55) 100%)}
+.wrap{position:relative;z-index:2;max-width:820px;margin:0 auto;padding:26px 20px 70px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;letter-spacing:.18em;color:var(--paper-dim);
+  border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:34px}
+.topbar .rec{display:inline-flex;align-items:center;gap:8px;color:var(--torii-l)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--torii-l);animation:blink 1.6s steps(1,end) infinite}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.15}}
+.screen{display:none}
+.screen.on{display:block;animation:fadeUp .45s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.cover{text-align:center;padding:18px 0 10px;min-height:calc(100vh - 190px);display:flex;flex-direction:column;justify-content:center;align-items:center}
+.kicker{font-size:12px;letter-spacing:.4em;color:var(--moss-l);text-transform:uppercase}
+h1.title{font-size:clamp(44px,11vw,86px);line-height:1;margin:.28em 0 .1em;letter-spacing:.12em;font-weight:600;text-shadow:0 0 40px rgba(201,169,97,.15)}
+.title small{display:block;font-size:13px;letter-spacing:.32em;color:var(--paper-dim);margin-top:18px;font-weight:400}
+.rule{width:64px;height:1px;background:var(--torii);margin:26px auto}
+.lede{max-width:34em;margin:0 auto;color:var(--paper-dim);font-size:15.5px}
+.lede b{color:var(--paper);font-weight:600}
+.meta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:26px 0 6px}
+.chip{font-size:12px;letter-spacing:.1em;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--paper-dim);font-family:ui-monospace,Menlo,Consolas,monospace}
+.chip.warn{border-color:rgba(168,69,47,.5);color:var(--torii-l)}
+.chip.kink{border-color:rgba(201,169,97,.3);color:var(--gold)}
+.btn{display:inline-block;cursor:pointer;user-select:none;background:linear-gradient(180deg,#1c2623,#141c1a);
+  border:1px solid rgba(201,169,97,.35);color:var(--paper);font-family:inherit;font-size:16px;letter-spacing:.16em;
+  padding:15px 34px;border-radius:2px;transition:transform .18s ease,border-color .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);border-color:rgba(201,169,97,.8);box-shadow:0 10px 30px -12px rgba(201,169,97,.5)}
+.btn:active{transform:translateY(0)}
+.btn.primary{background:linear-gradient(180deg,#b04a32,#8e3624);border-color:#c9624a}
+.btn.primary:hover{box-shadow:0 12px 34px -12px rgba(200,98,74,.7)}
+.btn.ghost{background:transparent;border-color:var(--line);font-size:14px;padding:11px 22px}
+.btn[disabled]{opacity:.4;cursor:not-allowed;transform:none}
+.cover .go{margin-top:34px}
+.footnote{margin-top:38px;font-size:12px;color:rgba(169,162,148,.7);letter-spacing:.08em}
+.qinner{min-height:calc(100vh - 210px);display:flex;flex-direction:column;justify-content:flex-start;padding-top:7vh}
+.qhead{display:flex;justify-content:space-between;align-items:baseline;gap:14px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;letter-spacing:.16em;color:var(--paper-dim)}
+.qhead .idx{color:var(--gold)}
+.bar{height:2px;background:rgba(255,255,255,.08);margin:12px 0 34px;overflow:hidden}
+.bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--torii),var(--gold));transition:width .45s cubic-bezier(.22,.61,.36,1)}
+.qtext{font-size:clamp(19px,3.4vw,24px);line-height:1.7;margin:0 0 28px;letter-spacing:.02em}
+.qtag{font-size:11px;letter-spacing:.3em;color:var(--moss-l);margin-bottom:10px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.opts{display:grid;gap:11px}
+.opt{position:relative;text-align:left;cursor:pointer;background:linear-gradient(180deg,rgba(28,38,35,.75),rgba(16,23,21,.75));
+  border:1px solid var(--line);border-left:2px solid rgba(109,133,112,.5);color:var(--paper);font-family:inherit;font-size:15.5px;line-height:1.65;
+  padding:15px 18px 15px 50px;border-radius:2px;transition:border-color .18s,background .18s,transform .18s}
+.opt:hover{border-color:rgba(201,169,97,.5);border-left-color:var(--gold);transform:translateX(3px)}
+.opt .k{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:var(--moss-l);letter-spacing:.1em}
+.opt:hover .k{color:var(--gold)}
+.opt.picked{border-left-color:var(--torii);background:rgba(168,69,47,.12)}
+.qnav{display:flex;justify-content:space-between;margin-top:26px;align-items:center}
+.card{border:1px solid var(--line);background:linear-gradient(180deg,rgba(24,32,30,.9),rgba(13,18,17,.92));padding:26px 24px;position:relative}
+.card::before{content:"";position:absolute;inset:6px;border:1px solid rgba(232,226,210,.05);pointer-events:none}
+.card-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+.uid{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;letter-spacing:.2em;color:var(--paper-dim)}
+.faction{font-size:11.5px;letter-spacing:.28em;padding:4px 10px;border:1px solid rgba(201,169,97,.35);color:var(--gold)}
+.who-row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.portrait{flex:0 0 168px;width:168px;border:1px solid var(--line);background:#0b100f;position:relative;overflow:hidden}
+.portrait svg,.portrait img{display:block;width:100%;height:auto}
+.portrait img{aspect-ratio:4/5;object-fit:cover}
+.portrait .cap{position:absolute;left:0;right:0;bottom:0;padding:4px 7px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:9px;letter-spacing:.14em;color:rgba(232,226,210,.55);background:linear-gradient(180deg,transparent,rgba(0,0,0,.75))}
+.who-id{flex:1 1 260px;min-width:0}
+h2.who{font-size:clamp(28px,6.4vw,42px);margin:.1em 0 .12em;letter-spacing:.06em;line-height:1.15}
+.alias{color:var(--paper-dim);font-size:13.5px;letter-spacing:.1em}
+.roles{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.match{display:flex;align-items:baseline;gap:8px;margin:14px 0 2px}
+.match b{font-size:32px;color:var(--gold);font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:-.02em}
+.match span{font-size:12px;letter-spacing:.2em;color:var(--paper-dim)}
+.quote{margin:18px 0;padding:13px 16px;border-left:2px solid var(--torii);color:#ddd6c6;font-size:15px;background:rgba(168,69,47,.06)}
+.desc{font-size:15px;color:#cfc8b8}
+.desc p{margin:.55em 0}
+.traits{margin:24px 0 4px;display:grid;gap:9px}
+.tr{display:grid;grid-template-columns:64px 1fr 26px;align-items:center;gap:10px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:var(--paper-dim);letter-spacing:.08em}
+.tr .track{height:4px;background:rgba(255,255,255,.07);position:relative;overflow:hidden}
+.tr .track i{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,var(--moss-l),var(--gold));transition:width .8s cubic-bezier(.22,.61,.36,1)}
+.others{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+.others h3{font-size:12px;letter-spacing:.3em;color:var(--moss-l);margin:0 0 10px;font-weight:400;font-family:ui-monospace,Menlo,Consolas,monospace}
+.other{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.06);font-size:14px;color:#c6c0b1}
+.other em{font-style:normal;color:var(--paper-dim);font-size:12.5px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.note{margin-top:20px;font-size:12px;color:rgba(169,162,148,.65);letter-spacing:.04em}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:rgba(20,28,26,.96);border:1px solid rgba(201,169,97,.4);
+  color:var(--paper);padding:10px 18px;font-size:13px;border-radius:2px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:560px){.wrap{padding:20px 15px 60px}.card{padding:20px 15px}
+  .opt{font-size:14.5px;padding:13px 14px 13px 44px}.opt .k{left:13px}
+  .portrait{flex:0 0 128px;width:128px}}
+</style>
+</head>
+<body>
+<div class="fog"><i></i><i></i><i></i></div>
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<div class="wrap">
+  <div class="topbar">
+    <span class="rec"><span class="dot"></span>REC</span>
+    <span id="tc">00:00:00</span>
+    <span>兄弟山 · 民俗调查档案</span>
+  </div>
+
+  <section class="screen on" id="s-cover">
+    <div class="cover">
+      <div class="kicker">A Documentary on One Thousand and One Brothers</div>
+      <h1 class="title">兄弟山<small>人 格 档 案 · 测 测 你 是 谁</small></h1>
+      <div class="rule"></div>
+      <p class="lede">
+        兄弟山，一座有数百年历史的山村，常住人口一千余人，<b>全部为男性</b>。<br>
+        这里的男人都叫兄弟。兄弟都很壮。兄弟都很热。<br><br>
+        本问卷共 <b>40 题</b>，其中三十题与你的身体有关。<br>
+        请凭直觉作答。不要思考。思考会让你暴露。
+      </p>
+      <div class="meta-row">
+        <span class="chip">40 问</span>
+        <span class="chip">约 6 分钟</span>
+        <span class="chip warn">18+ / R18</span>
+        <span class="chip">性癖 · 服从 · 民俗</span>
+      </div>
+      <div class="go"><button class="btn primary" id="start">开 始 调 查</button></div>
+      <p class="footnote">「长子不上堂，兄弟满山岗。」</p>
+    </div>
+  </section>
+
+  <section class="screen" id="s-quiz">
+  <div class="qinner">
+    <div class="qhead">
+      <span>档案编号 <span class="idx" id="uid">BR-0000</span></span>
+      <span><span id="qi">1</span> / 40</span>
+    </div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="qtag" id="qtag">调 查 问 卷</div>
+    <h3 class="qtext" id="qtext"></h3>
+    <div class="opts" id="opts"></div>
+    <div class="qnav">
+      <button class="btn ghost" id="back">← 上一题</button>
+      <span class="chip" id="hint">按 1 – 4 选择</span>
+    </div>
+  </div>
+  </section>
+
+  <section class="screen" id="s-result">
+    <div class="card">
+      <div class="card-top">
+        <span class="uid">档案 BR-0000 · 兄弟山民俗调查组</span>
+        <span class="faction" id="faction"></span>
+      </div>
+      <div class="who-row">
+        <div class="portrait" id="portrait"></div>
+        <div class="who-id">
+          <h2 class="who" id="name"></h2>
+          <div class="alias" id="alias"></div>
+          <div class="roles" id="roles"></div>
+          <div class="match"><b id="pct">0%</b><span>匹 配 度</span></div>
+        </div>
+      </div>
+      <div class="quote" id="quote"></div>
+      <div class="desc" id="desc"></div>
+      <div class="traits" id="traits"></div>
+      <div class="others">
+        <h3>你 的 其 他 可 能</h3>
+        <div id="others"></div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="again">再 测 一 次</button>
+        <button class="btn ghost" id="copy">复 制 结 果</button>
+      </div>
+      <p class="note" id="note">本问卷为同人恶搞，与任何真实村落、家族、神明无关。所有角色均为成年人虚构人物。</p>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script id="data">
+const TRAITS = ["m","d","b","o","f","c","r","x","z","g"];
+const TRAIT_LABEL = {m:"体量",d:"支配",b:"承受",o:"诡秘",f:"武勇",c:"魅惑",r:"理智",x:"堕落",z:"叛逆",g:"苍老"};
+
+const QUESTIONS = [
+ {q:"一个人开车进山，导航在岔口失联。后视镜里出现一辆没开车灯的车。", a:[
+   ["加速，甩开它。",{f:2,r:1}],
+   ["靠边停，看看是谁。",{c:2,z:1}],
+   ["假装没看见，继续开。",{r:2}],
+   ["摇下车窗，冲它招手。",{z:2,c:1}]]},
+ {q:"村口石碑刻着「兄弟山」，字缝里塞满硬币、头发和指甲。你伸手——", a:[
+   ["摸一下。指尖发麻。",{c:2,x:1}],
+   ["拍照，取证。",{r:2,o:1}],
+   ["也塞一枚硬币进去。",{x:2,z:1}],
+   ["用舌头去舔那些字。",{x:3,c:2}]]},
+ {q:"递给你山泉水的壮汉：白背心、短裤、白袜、拖鞋，胯下鼓得很明显。", a:[
+   ["接过来就喝，眼睛盯着他的手。",{b:2,c:1}],
+   ["道谢，收下，不喝。",{r:2}],
+   ["当着他的面喝完，舔了下嘴唇。",{c:3,x:1}],
+   ["反问他：这水是不是有问题？",{z:2,r:1}]]},
+ {q:"民宿老板擦着杯子问「一个人？」，目光在你身上停了三秒。", a:[
+   ["「是。我来看山。」",{r:1,o:1}],
+   ["「不是。我朋友在山下等我。」",{r:1,z:1}],
+   ["「你猜。」",{c:2,d:1}],
+   ["「你想让我是一个人吗？」",{c:3,d:1}]]},
+ {q:"看一个人，你最先看哪里？", a:[
+   ["胸。越厚越好，能埋进去。",{m:2,c:1}],
+   ["手。指节粗、掌心热。",{d:1,f:1}],
+   ["胯。裤子撑起来的那一块。",{c:2,x:1}],
+   ["眼睛。眼镜后面那种还算人的眼神。",{r:1,o:1,c:1}]]},
+ {q:"体味：汗、烟草、旧木头、山泉水的铁锈味。", a:[
+   ["汗味最要命。",{m:1,c:2,x:1}],
+   ["铁锈味，像血。",{o:1,x:2}],
+   ["干净的味道，皂角。",{r:1,b:1}],
+   ["混在一起才够。",{x:2,c:1,m:1}]]},
+ {q:"对方比你高一头，站着把你圈在墙角。", a:[
+   ["抬头看他。",{b:2,c:1}],
+   ["推他一下，试试。",{f:2,d:1}],
+   ["直接抱住他的腰。",{b:1,c:2}],
+   ["蹲下去。",{b:3,c:2,x:1}]]},
+ {q:"你更喜欢哪一种「沉默」？", a:[
+   ["进去之前的沉默。",{b:2,c:1}],
+   ["结束之后的沉默。",{r:1,b:1}],
+   ["他一句话不说就开始。",{d:2,b:1}],
+   ["我说话，他不回答。",{c:2,d:1,x:1}]]},
+ {q:"白背心、白袜、拖鞋、眼镜——这套制服对你的作用是：", a:[
+   ["制服控。直接硬。",{c:3,x:1}],
+   ["想把它弄脏。",{x:3,c:1}],
+   ["想把它脱掉。",{c:2,b:1}],
+   ["想自己也穿一套。",{z:1,c:1,x:1}]]},
+ {q:"为了「被填满」，你能做到什么程度？", a:[
+   ["主动骑上去。",{b:3,c:2}],
+   ["躺着，让他自己来。",{b:2,c:1}],
+   ["先看他自己忍不住。",{d:2,c:1}],
+   ["被填满不是目的，被记住才是。",{b:2,o:1,c:1}]]},
+ {q:"三个人的时候，你在哪？", a:[
+   ["中间。两边都塞满。",{b:3,c:2}],
+   ["上面。我说了算。",{d:3,f:1}],
+   ["门口。看着，记录。",{r:2,o:1}],
+   ["我为什么会在这里。",{z:1,r:1}]]},
+ {q:"你更愿意被怎么叫？", a:[
+   ["「兄弟」。",{b:2,x:1}],
+   ["「老爷」。",{d:2,g:1}],
+   ["「小东西」。",{b:3,c:1}],
+   ["本名。请叫我的名字。",{r:1,z:1}]]},
+ {q:"一个壮汉在你面前哭了。他说他不想再带人进山了。", a:[
+   ["抱住他。",{b:2,c:1}],
+   ["「那你为什么还带？」",{r:2,d:1}],
+   ["先亲他，再蹲下去。",{c:3,b:2}],
+   ["记录他说的话。",{r:2,o:1}]]},
+ {q:"你最不能拒绝的是：", a:[
+   ["一个哭着求你留下的人。",{b:2,r:1}],
+   ["一个比你强很多的人下的命令。",{b:2,d:2}],
+   ["一个看起来很危险的人对你笑。",{c:3,x:1}],
+   ["一杯水。",{x:2,z:1}]]},
+ {q:"被绑起来的时候，你希望：", a:[
+   ["眼睛也蒙上。",{b:2,o:1}],
+   ["只绑手，让我还能挣扎。",{f:1,z:1,b:1}],
+   ["绑紧，一点都动不了。",{b:3,d:1}],
+   ["我不喜欢被绑。",{d:2,f:1}]]},
+ {q:"疼痛：", a:[
+   ["要。但要在我准备好之后。",{b:2,d:1}],
+   ["直接来。",{f:2,b:2}],
+   ["不要。",{r:2}],
+   ["看是谁打。",{c:2,x:1}]]},
+ {q:"最有效的一句指令：", a:[
+   ["「跪好。」",{b:3,d:1}],
+   ["「看着我。」",{c:2,r:1}],
+   ["「别出声。」",{b:2,c:1}],
+   ["「你来。」",{d:3,f:1}]]},
+ {q:"脏：", a:[
+   ["汗、口水、别的什么，都要。",{x:3,c:2}],
+   ["只要口水。",{c:2,b:1}],
+   ["事后必须洗干净。",{r:2}],
+   ["越脏越好。",{x:3,z:1}]]},
+ {q:"声音：", a:[
+   ["我想被听见。",{c:3,z:1}],
+   ["我想听他的。",{b:2,c:1}],
+   ["最好两个人都别出声。",{b:1,r:1}],
+   ["我想录下来。",{r:2,o:1}]]},
+ {q:"留下痕迹：", a:[
+   ["掐痕、牙印，越明显越好。",{x:2,c:2}],
+   ["只在看不见的地方。",{b:2,r:1}],
+   ["不要留。",{r:2}],
+   ["我想留在他身上。",{d:2,x:1}]]},
+ {q:"被看着：", a:[
+   ["兴奋。",{c:3,z:1}],
+   ["无所谓。",{b:1,r:1}],
+   ["会软。",{r:2}],
+   ["我会盯回去。",{d:2,c:1}]]},
+ {q:"你更想让对方：", a:[
+   ["记住你的身体。",{b:2,c:2}],
+   ["记住你的名字。",{r:1,o:1}],
+   ["怕你。",{d:2,f:2}],
+   ["离不开你。",{c:2,d:1}]]},
+ {q:"触感：", a:[
+   ["体毛。",{m:2,c:1}],
+   ["剃得干干净净。",{c:1,r:1}],
+   ["汗湿的皮肤。",{x:2,c:2}],
+   ["眼镜框贴在你脸上。",{r:1,c:2}]]},
+ {q:"事后：", a:[
+   ["抱着睡。",{b:2,c:1}],
+   ["立刻洗澡。",{r:2}],
+   ["再来一次。",{c:2,x:2}],
+   ["穿衣服走人。",{z:2,r:1}]]},
+ {q:"你喝了三天山泉水。身体开始发热。", a:[
+   ["继续喝。",{x:3,b:2}],
+   ["偷偷倒掉。",{r:2,z:1}],
+   ["拿去送检。",{r:2,o:1}],
+   ["灌得更多。",{x:3,c:1}]]},
+ {q:"村民集体站在你家门口，安静地等你出来。", a:[
+   ["开门，跟他们走。",{b:3,x:1}],
+   ["从后窗走。",{f:1,z:2}],
+   ["开门，问他们想干什么。",{r:2,d:1}],
+   ["让他们进来，一个一个来。",{c:3,x:2}]]},
+ {q:"你怀孕了。（或者：有人怀了你的孩子。）", a:[
+   ["生下来。",{b:3,m:1}],
+   ["先搞清楚是谁的。",{r:2,o:1}],
+   ["这山真有意思。",{x:3,z:1}],
+   ["找路下山。",{f:2,r:1}]]},
+ {q:"镜子里那个女人对你说：「你不属于这里。」", a:[
+   ["问：你是谁？",{o:2,r:1}],
+   ["「我知道。」",{z:1,o:1}],
+   ["「可我想留下。」",{b:2,c:1,x:1}],
+   ["「你也不属于这里吧。」",{o:2,z:1}]]},
+ {q:"你有机会烧掉那座神社。", a:[
+   ["烧。",{f:1,z:3}],
+   ["不烧。我想知道她想要什么。",{o:2,r:1}],
+   ["先拍完照再烧。",{r:1,x:1}],
+   ["跪下来问她。",{o:2,b:2}]]},
+ {q:"一个壮汉从背后把手放在你腰上。", a:[
+   ["不动，让他继续。",{b:3,c:1}],
+   ["反手握住，笑。",{c:2,d:1}],
+   ["肘击。",{f:2,z:1}],
+   ["「这里不行。」",{r:2,d:1}]]},
+ {q:"山里的声音，你希望它：", a:[
+   ["停下。",{r:1,z:1}],
+   ["一直响。",{o:2,x:1}],
+   ["离你越来越近。",{b:2,o:1}],
+   ["是我自己的声音。",{o:3,z:1}]]},
+ {q:"你的影子多了一个，比你宽很多。", a:[
+   ["蹲下，跟影子打招呼。",{z:2,o:1}],
+   ["数一数，一共几个。",{r:2,o:1}],
+   ["不回头，慢慢走回屋。",{f:2,r:1}],
+   ["让它跟上你，带它进屋。",{x:2,o:1,b:1}]]},
+ {q:"你只能带走一个人。", a:[
+   ["项曹尼。他一直在被人用。",{b:2,f:1,r:1}],
+   ["钟爱国。他快没了。",{b:2,r:1}],
+   ["项阳生。他知道真相。",{r:1,o:1}],
+   ["我自己。",{z:2,r:1}]]},
+ {q:"调查记录的最后一页，你写：", a:[
+   ["「此地的性别结构不可解释。」",{r:2,o:1}],
+   ["「他们都很快乐。这是最恐怖的部分。」",{o:2,r:1}],
+   ["「我喝过这里的水。」",{x:2,b:1}],
+   ["「我没有离开。」",{o:2,z:1}]]},
+ {q:"你最后悔的一件事：", a:[
+   ["喝了第一口水。",{x:2,b:1}],
+   ["没有早点走。",{r:2,f:1}],
+   ["没有留下。",{b:2,o:1}],
+   ["我什么都不后悔。",{z:2,x:1}]]},
+ {q:"留在山里的代价，你愿意付哪一样？", a:[
+   ["身体。",{b:2,x:2}],
+   ["名字。",{o:2,r:1}],
+   ["记忆。",{o:2,z:1}],
+   ["无所谓，我本来也没什么可失去的。",{x:2,z:2}]]},
+ {q:"如果必须选一个结局：", a:[
+   ["成为兄弟山的一部分。",{o:2,x:2,b:1}],
+   ["带着真相逃出去。",{r:2,f:1}],
+   ["放一把火，然后留下。",{z:3,f:1}],
+   ["在山的另一面，见到她。",{o:2,b:1}]]},
+ {q:"钟爱国再一次把水瓶递给你。", a:[
+   ["喝。",{b:2,x:2}],
+   ["问他：你带了多少人进来。",{r:2,o:1}],
+   ["把瓶子摔了。",{f:1,z:2}],
+   ["亲他。",{c:3,b:2}]]},
+ {q:"村里要给你上户口。", a:[
+   ["签。",{b:2,x:1}],
+   ["撕掉。",{z:2,f:1}],
+   ["先看清条款。",{r:2}],
+   ["签，但用假名。",{z:1,r:1,o:1}]]},
+ {q:"最后一幕：路灯下的壮汉问「第一次来兄弟山？」", a:[
+   ["「嗯。」",{b:2,c:1}],
+   ["「第二次。」",{o:2,z:1}],
+   ["「我就是这里的人。」",{d:2,o:1}],
+   ["不回答，把水瓶接过来。",{x:2,b:1}]]}
+];
+
+const FACTION_COLOR = {"沃氏":"#a4563c","项氏":"#4d7076","外来者":"#7d7a4e","山":"#6a5780"};
+
+/* 本地版把 {} 换成 {id:"Pics/xxx.jpg"} 即可优先用人物照；留空用程序剪影 */
+const PORTRAITS = {};
+
+const CHARACTERS = [
+ {id:"tianyuan", name:"田园", alias:"粉发的泉眼", faction:"外来者", role:"0 · 魅惑型", kink:"笑起来很甜，做起来很狠",
+  v:[4,1,9,5,2,10,3,7,5,1], quote:"「我不是被吃掉的。我是把他吸进来的。」",
+  desc:["粉色头发，进门第一件事是找镜子，第二件事是找最壮的那个。",
+        "他喝了兄弟山的水，怀过一次说不清是谁的孩子；也用身体收过别的东西——那些不该有形状的兄弟。",
+        "村里所有人都对他客气。连山都对他客气。"]},
+ {id:"lengfeng", name:"冷锋", alias:"覆面的老兵", faction:"外来者", role:"1 · 可为爱做 0", kink:"覆面、沉默、只对一个人服软",
+  v:[6,7,3,4,10,3,7,3,4,4], quote:"「我可以为爱做 0。但我不会为你跪下。」",
+  desc:["覆面，退伍，话不多。习惯先看出口，再看人。",
+        "这辈子只破过两次规矩：一次是山道上没开枪，一次是在钟爱国的床边跪了下来。",
+        "前者救了全村，后者毁了他。他不后悔。"]},
+ {id:"cangletou", name:"苍乐透", alias:"自认直男的混混", faction:"外来者", role:"0.5 · 嘴上说不要", kink:"三人行里最慌的那个",
+  v:[5,5,4,3,5,8,5,6,8,2], quote:"「三个人……也算双吧？」",
+  desc:["自称直男，被问三次以后改口说「我是 0.5，但那是被迫的」。",
+        "在兄弟山跟田园、钟爱国搞过一场 3P，事后抽着烟评价：这地方的水是真的有问题。",
+        "但他又回去了。说是为了钱，其实不是为了钱。"]},
+ {id:"woshiji", name:"沃世给", alias:"沃老爷 · 幕后黑手", faction:"沃氏", role:"0 · 权力型", kink:"失禁也不妨碍他挑人",
+  v:[2,9,1,10,2,6,7,10,6,9], quote:"「山是我的。水是我的。你也是。」",
+  desc:["干瘪，坐轮椅，穿一件不合身的白背心。已经大小便失禁。",
+        "但他有一万一千四百一十四个性伴侣的号码，全是兄弟。他说这是他的「孙子们」。",
+        "兄弟山变成今天这样，族谱上找不到他的名字，可每一页都有他的指纹。"]},
+ {id:"woaini", name:"沃蔼尼", alias:"猪面的眼镜 · 沃家长子", faction:"沃氏", role:"0.5 · 猥琐型", kink:"喜欢让人坐他腿上",
+  v:[9,2,5,5,2,4,3,8,3,6], quote:"「嘿嘿……坐这儿。坐我腿上。」",
+  desc:["猪系，戴眼镜，笑起来让你想换一家民宿。",
+        "没什么野心，唯一的爱好是让外来的人坐到他腿上，然后问「你冷不冷」。",
+        "村里人说他不坏。村里人的标准你最好别深究。"]},
+ {id:"woxinni", name:"沃𬣳尼", alias:"眼镜后的熊 · 沃家次子", faction:"沃氏", role:"0.5 · 播种型", kink:"阴险，慢，算得清楚",
+  v:[8,6,4,8,4,6,6,7,4,7], quote:"「孩子已经生下来了。你还想知道什么？」",
+  desc:["熊系，戴眼镜，说话很慢，眼睛一直在算。",
+        "他和蔼尼一起让田园怀了孩子——这件事他从不否认，只会反问一句「你确定是『让』吗」。",
+        "他相信兄弟山需要一个新故事，而他正在写。"]},
+ {id:"xiangcaoni", name:"项曹尼", alias:"第三条项家血脉 · 屈辱者", faction:"项氏", role:"0.5 · 被使用型", kink:"大 dick 体育生，最怕被可怜",
+  v:[8,1,8,4,6,7,4,5,5,2], quote:"「我不是玩具。……别再用那种眼神看我。」",
+  desc:["黑皮，体育生，天赋异禀，被全村叫作「项家的第三条血脉」。",
+        "实际上他是项顺智和沃世给的孩子，被送进沃家，成了蔼尼兄弟的玩具。",
+        "他等着一个人来把他带走。他已经等了很久。"]},
+ {id:"xiangyangsheng", name:"项阳生", alias:"忧郁的继承人 · 知情者", faction:"项氏", role:"不明 · 慢热", kink:"只在说真话的时候硬",
+  v:[5,4,4,7,3,5,8,3,4,3], quote:"「我告诉你真相。你别难过。」",
+  desc:["项家最后的孩子，眼睛像刚从水里捞出来。",
+        "他知道沃项之乱那一夜发生过什么，也知道那二百三十七个女人去了哪里。",
+        "他一直没说，因为说了就没人会留下来陪他了。"]},
+ {id:"zhongaiguo", name:"钟爱国", alias:"山外的导游 · 共犯", faction:"外来者", role:"0.4 · 被改造型", kink:"身体已经记不住次数",
+  v:[6,2,9,5,3,6,6,5,3,6], quote:"「喝点。我们这里的水养人。」",
+  desc:["以前是异性恋，有女朋友，在城里上班。",
+        "后来他喝了水，生了孩子，成了兄弟山的导游，住在村外，每隔一段时间回村看孩子。",
+        "他带进来的人，他都记得名字。身体已经千疮百孔，但他还在带——因为不带，就见不到孩子。"]},
+ {id:"lingzhu", name:"兄弟山领主", alias:"没有实体的她", faction:"山", role:"— · 不可攻略", kink:"她只要求你离开男人",
+  v:[1,10,7,10,4,8,6,7,5,10], quote:"「长子不上堂，兄弟满山岗。」",
+  desc:["没有名字，没有脸，没有实体。有人的地方，她就在墙里。",
+        "她不是「女同之神」——那是村民后来起的绰号。她真正的权能是：令女子远离男子。",
+        "她实现愿望时严格按字面执行。沃我握许愿那天，她听得很仔细。"]},
+ {id:"woerma", name:"沃尔玛", alias:"那对兄弟的父亲", faction:"沃氏", role:"1 · 老派粗暴", kink:"肉壮，嗓门大，不懂温柔",
+  v:[9,6,4,4,6,3,4,5,2,8], quote:"「我死之前，已经看见过了。」",
+  desc:["肉壮老头，打过猎，抱过两个孩子。",
+        "他给两个儿子取名「蔼尼」「𬣳尼」，村里人都说这名字取得好。",
+        "正篇开始前就已经死了。死因写的是「年老」。那年他五十一岁。"]},
+ {id:"bailu", name:"白露", alias:"生过兄弟的女人", faction:"沃氏", role:"0 · 沉默的母性", kink:"最后一句话是「别把孩子留在山上」",
+  v:[2,2,8,6,1,6,5,3,3,4], quote:"「别把孩子留在山上。」",
+  desc:["白幼瘦，说话很轻，是村里最后一个记得「女人」这个词怎么用的人。",
+        "她生了两个孩子，两个都不太像人。她谁也没告诉。",
+        "她死在一个没有雾的早晨。兄弟山那天特别安静。"]},
+ {id:"woshizhi", name:"沃世直", alias:"被撕掉的那一页", faction:"沃氏", role:"1 · 被遗忘的", kink:"没人记得他的尺寸",
+  v:[5,4,2,3,5,2,6,3,3,5], quote:"「族谱上没有我。」",
+  desc:["沃老爷的弟弟，普通身材，普通长相，普通到很适合被忘掉。",
+        "沃氏家谱里，他那一页被撕掉了——不是烧的，是撕的，边缘很整齐。",
+        "有人说他反对过兄长，有人说他什么都没做。两种说法都成立。"]},
+ {id:"xiangshunzhi", name:"项顺智", alias:"掌水的家主", faction:"项氏", role:"1 · 克制型", kink:"守规矩守到死",
+  v:[5,6,2,3,5,3,8,3,2,6], quote:"「水能养人，也能记事。」",
+  desc:["薄肌，克制，项家最后一个讲道理的族长。",
+        "「沃氏掌山，项氏掌水」——这句祖训是他守到死的。",
+        "他死前把那口井封了。封井那天，他一个人下到井底，待了很久。"]},
+ {id:"zhaolusi", name:"赵鹿丝", alias:"项家的井", faction:"项氏", role:"0 · 安静型", kink:"织过一块画着山另一面的布",
+  v:[2,2,7,4,1,5,6,3,3,4], quote:"「你要走，就走远一点。」",
+  desc:["白幼瘦，安静，是项家最后一位会织布的女人。",
+        "她织过一块布，图案是山的另一面。那块布后来被拿去盖神像了。",
+        "失踪那夜，她的织机还转着。"]},
+ {id:"cunmin", name:"兄弟山村民", alias:"一千零一个兄弟", faction:"山", role:"1/0 都有", kink:"熊猪 · app 大于 70",
+  v:[10,3,4,4,5,3,2,6,2,5], quote:"「女人？……外面那种？」",
+  desc:["熊，或者猪。app 大于 70。白背心、短裤、白袜、拖鞋。",
+        "他们种兄弟豆，喝山泉水，抱着婴儿在梯田边晒太阳，生活平静而完整。",
+        "他们都很幸福。这是这个村子最恐怖的部分。"]}
+];
+
+function emptyVec(){ const v={}; TRAITS.forEach(t=>v[t]=0); return v; }
+
+const CAL = {tianyuan:[0.8832,0.05,-0.45],lengfeng:[0.7845,0.0637,-0.055],cangletou:[0.9003,0.037,-0.398],woshiji:[0.7869,0.0587,-0.089],woaini:[0.7613,0.0605,0.294],woxinni:[0.8397,0.0482,0.448],xiangcaoni:[0.8602,0.0469,-0.129],xiangyangsheng:[0.8814,0.0411,-0.056],zhongaiguo:[0.8628,0.0435,0.255],lingzhu:[0.8452,0.0507,-0.057],woerma:[0.7261,0.0686,0.45],bailu:[0.8789,0.0414,-0.138],woshizhi:[0.7808,0.0617,0.406],xiangshunzhi:[0.7646,0.0651,0.314],zhaolusi:[0.8847,0.0385,-0.062],cunmin:[0.7146,0.0667,0.341]};
+
+const DENOM = (function(){
+  const s = {}, n = {v:0};
+  TRAITS.forEach(t=>s[t]=0);
+  QUESTIONS.forEach(q=>q.a.forEach(o=>{ n.v++; for(const k in o[1]) s[k] += o[1][k]; }));
+  const avg = n.v/4, d = {};
+  TRAITS.forEach(t=>{ d[t] = Math.pow(s[t]/avg || 1, 0.6); });
+  return d;
+})();
+
+function score(answers){
+  const u = emptyVec();
+  answers.forEach((ai, qi) => {
+    const q = QUESTIONS[qi]; if(!q) return;
+    const opt = q.a[ai]; if(!opt) return;
+    for(const k in opt[1]){ if(u[k] !== undefined) u[k] += opt[1][k]; }
+  });
+  const rank = CHARACTERS.map(ch=>{
+    let dot = 0, a = 0, b = 0;
+    TRAITS.forEach((t,i)=>{
+      const x = u[t] / DENOM[t];
+      dot += x * ch.v[i]; a += x * x; b += ch.v[i] * ch.v[i];
+    });
+    const sim = dot / (Math.sqrt(a) * Math.sqrt(b) || 1);
+    const cal = CAL[ch.id] || [0.85, 0.05, 0];
+    return {ch, sim, score: (sim - cal[0]) / cal[1] + cal[2]};
+  });
+  rank.sort((x,y)=>y.score-x.score);
+  return {vec:u, rank};
+}
+
+/* 程序生成的「档案照」剪影（不含真人影像） */
+function portraitSVG(ch){
+  const m = ch.v[0], age = ch.v[9];
+  const half = 34 + m * 7, headR = 22 + m * 0.9, cx = 100, cy = 88;
+  const accent = FACTION_COLOR[ch.faction] || "#7a6a4a";
+  const skin = "rgba(210,200,180," + (0.16 + m * 0.012).toFixed(2) + ")";
+  let extra = "";
+  if (ch.id === "lingzhu") {
+    return '<svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">' +
+      '<defs><radialGradient id="gL" cx="50%" cy="40%" r="60%">' +
+      '<stop offset="0%" stop-color="' + accent + '" stop-opacity=".35"/>' +
+      '<stop offset="100%" stop-color="#0b100f" stop-opacity="0"/></radialGradient></defs>' +
+      '<rect width="200" height="250" fill="#0b100f"/><rect width="200" height="250" fill="url(#gL)"/>' +
+      '<g stroke="' + accent + '" stroke-width="1" fill="none" opacity=".55">' +
+      '<ellipse cx="100" cy="112" rx="46" ry="58"/><ellipse cx="100" cy="112" rx="30" ry="40"/>' +
+      '<circle cx="100" cy="66" r="14"/><path d="M56 190 Q100 150 144 190"/></g>' +
+      '<g fill="#dfe6e0" opacity=".18"><circle cx="70" cy="60" r="16"/><circle cx="132" cy="70" r="11"/><circle cx="96" cy="44" r="8"/></g>' +
+      '<rect x="0.5" y="0.5" width="199" height="249" fill="none" stroke="rgba(232,226,210,.16)"/></svg>';
+  }
+  if (ch.id === "woaini" || ch.id === "woxinni") {
+    extra += '<g fill="none" stroke="rgba(220,230,220,.65)" stroke-width="1.6">' +
+      '<circle cx="' + (cx-9) + '" cy="' + (cy-2) + '" r="8"/><circle cx="' + (cx+9) + '" cy="' + (cy-2) + '" r="8"/>' +
+      '<line x1="' + (cx-1) + '" y1="' + (cy-2) + '" x2="' + (cx+1) + '" y2="' + (cy-2) + '"/></g>';
+  }
+  if (ch.id === "lengfeng") {
+    extra += '<rect x="' + (cx-headR) + '" y="' + (cy+1) + '" width="' + (headR*2) + '" height="' + (headR*0.95) + '" rx="4" fill="#0a0e0d" opacity=".92"/>';
+  }
+  if (ch.id === "tianyuan") {
+    extra += '<path d="M' + (cx-headR-2) + ' ' + (cy-6) + ' A' + (headR+3) + ' ' + (headR+3) + ' 0 0 1 ' + (cx+headR+2) + ' ' + (cy-6) +
+      ' L' + (cx+headR+2) + ' ' + (cy-14) + ' A' + (headR+6) + ' ' + (headR+6) + ' 0 0 0 ' + (cx-headR-2) + ' ' + (cy-14) + ' Z" fill="#c86a8a" opacity=".85"/>';
+  }
+  if (ch.id === "xiangcaoni") {
+    extra += '<rect x="' + (cx-headR-1) + '" y="' + (cy-13) + '" width="' + (headR*2+2) + '" height="5" fill="' + accent + '" opacity=".7"/>';
+  }
+  if (ch.id === "cunmin" || ch.id === "woshiji") {
+    extra += '<path d="M' + (cx-18) + ' 150 L' + (cx-8) + ' 236 L' + (cx+8) + ' 236 L' + (cx+18) + ' 150" stroke="rgba(240,240,235,.12)" stroke-width="1" fill="none"/>';
+  }
+  if (ch.id === "woshiji") {
+    extra += '<g stroke="' + accent + '" stroke-width="1.4" fill="none" opacity=".5"><circle cx="72" cy="226" r="13"/><circle cx="128" cy="226" r="13"/></g>';
+  }
+  let bodies = "";
+  if (ch.id === "cunmin") {
+    bodies = '<g opacity=".35"><circle cx="56" cy="96" r="17" fill="' + skin + '"/><path d="M20 250 Q56 170 92 250 Z" fill="' + skin + '"/></g>' +
+             '<g opacity=".3"><circle cx="146" cy="102" r="15" fill="' + skin + '"/><path d="M112 250 Q146 180 180 250 Z" fill="' + skin + '"/></g>';
+  }
+  const ageWear = age > 7 ? 0.55 : 0.85;
+  return '<svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">' +
+    '<defs><linearGradient id="bg' + ch.id + '" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0%" stop-color="#18211f"/><stop offset="100%" stop-color="#080c0b"/></linearGradient></defs>' +
+    '<rect width="200" height="250" fill="url(#bg' + ch.id + ')"/>' +
+    '<g opacity="' + ageWear + '">' + bodies + '<g fill="' + skin + '">' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + headR + '"/>' +
+    '<path d="M' + (cx-half) + ' 250 Q' + (cx-half*0.78) + ' 168 ' + cx + ' 150 Q' + (cx+half*0.78) + ' 168 ' + (cx+half) + ' 250 Z"/></g>' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + headR + '" fill="none" stroke="' + accent + '" stroke-width="1" opacity=".7"/>' +
+    extra + '</g>' +
+    '<g stroke="rgba(232,226,210,.10)" stroke-width="1"><line x1="0" y1="30" x2="200" y2="30"/>' +
+    '<line x1="0" y1="220" x2="200" y2="220"/><line x1="8" y1="30" x2="8" y2="220"/></g>' +
+    '<rect x="0.5" y="0.5" width="199" height="249" fill="none" stroke="rgba(232,226,210,.16)"/></svg>';
+}
+
+function portraitHTML(ch){
+  const src = (typeof PORTRAITS !== "undefined") ? PORTRAITS[ch.id] : null;
+  if (!src) return portraitSVG(ch);
+  return '<img src="' + src + '" alt="" data-id="' + ch.id + '" ' +
+         'onerror="this.style.display=\'none\';this.parentNode.insertAdjacentHTML(\'afterbegin\', window.__fallback(this.getAttribute(\'data-id\')))">';
+}
+</script>
+
+<script id="app">
+(function(){
+  const $ = s => document.querySelector(s);
+  const screens = {cover:$("#s-cover"), quiz:$("#s-quiz"), result:$("#s-result")};
+  let qi = 0, answers = [];
+  let uid = "BR-" + String(Math.floor(Math.random()*9000)+1000);
+  window.__fallback = function(id){
+    const ch = CHARACTERS.filter(c=>c.id===id)[0];
+    return ch ? portraitSVG(ch) : "";
+  };
+  function show(name){
+    Object.keys(screens).forEach(k=>screens[k].classList.toggle("on", k===name));
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+  function toast(msg){
+    const t = $("#toast"); t.textContent = msg; t.classList.add("on");
+    clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("on"), 1800);
+  }
+  let t0 = Date.now();
+  setInterval(()=>{
+    const s = Math.floor((Date.now()-t0)/1000);
+    const p = n => String(n).padStart(2,"0");
+    $("#tc").textContent = p(Math.floor(s/3600)) + ":" + p(Math.floor(s%3600/60)) + ":" + p(s%60);
+  }, 1000);
+
+  function render(){
+    const q = QUESTIONS[qi];
+    $("#qi").textContent = qi+1;
+    $("#uid").textContent = uid;
+    $("#bar").style.width = (qi/QUESTIONS.length*100).toFixed(1) + "%";
+    $("#qtext").textContent = q.q;
+    $("#qtag").textContent = qi < 4 ? "第 一 部 分 · 山 道" :
+                            qi < 14 ? "第 二 部 分 · 身 体" :
+                            qi < 24 ? "第 三 部 分 · 癖 好" :
+                            qi < 32 ? "第 四 部 分 · 村 中" : "第 五 部 分 · 终 局";
+    const box = $("#opts"); box.innerHTML = "";
+    q.a.forEach((opt, i)=>{
+      const b = document.createElement("button");
+      b.className = "opt";
+      b.innerHTML = '<span class="k">' + "ABCD"[i] + "</span>";
+      b.appendChild(document.createTextNode(opt[0]));
+      b.addEventListener("click", ()=>pick(i));
+      box.appendChild(b);
+    });
+    $("#back").disabled = qi === 0;
+    $("#hint").textContent = "按 1 – 4 选择";
+  }
+
+  function pick(i){
+    answers[qi] = i;
+    document.querySelectorAll("#opts .opt").forEach((el,k)=>el.classList.toggle("picked", k===i));
+    setTimeout(()=>{
+      if(qi < QUESTIONS.length-1){ qi++; render(); } else finish();
+    }, 150);
+  }
+
+  function finish(){
+    $("#bar").style.width = "100%";
+    const res = score(answers);
+    const top = res.rank[0], ch = top.ch;
+    const pct = Math.max(68, Math.min(96, Math.round(80 + 6*top.score + Math.random()*1.5)));
+    $("#faction").textContent = ch.faction;
+    $("#name").textContent = ch.name;
+    $("#alias").textContent = ch.alias;
+    $("#roles").innerHTML = '<span class="chip kink">' + ch.role + '</span>' +
+                            '<span class="chip kink">' + ch.kink + '</span>';
+    $("#pct").textContent = pct + "%";
+    $("#portrait").innerHTML = portraitHTML(ch) +
+      '<div class="cap">' + ch.alias.split(" · ")[0] + ' · 兄弟山民俗调查组</div>';
+    $("#quote").textContent = ch.quote;
+    $("#desc").innerHTML = ch.desc.map(p=>"<p>"+p+"</p>").join("");
+    const pairs = TRAITS.map((t,i)=>({t, v:ch.v[i]})).sort((a,b)=>b.v-a.v).slice(0,5);
+    const max = pairs[0].v || 1;
+    $("#traits").innerHTML = pairs.map(p=>(
+      '<div class="tr"><span>'+TRAIT_LABEL[p.t]+'</span>'+
+      '<span class="track"><i data-w="'+(p.v/max*100).toFixed(0)+'"></i></span>'+
+      '<span>'+p.v+'</span></div>'
+    )).join("");
+    $("#others").innerHTML = res.rank.slice(1,4).map(r=>{
+      const sim = Math.max(60, Math.min(96, Math.round(74 + 5*r.score)));
+      return '<div class="other"><span>'+r.ch.name+' · '+r.ch.alias.split(" · ")[0]+
+             '</span><em>'+sim+'%</em></div>';
+    }).join("");
+    show("result");
+    document.querySelectorAll("#traits .track i").forEach((el,i)=>{
+      setTimeout(()=>{ el.style.width = el.dataset.w + "%"; }, 120 + i*80);
+    });
+  }
+
+  $("#start").addEventListener("click", ()=>{
+    qi = 0; answers = [];
+    uid = "BR-" + String(Math.floor(Math.random()*9000)+1000);
+    render(); show("quiz");
+  });
+  $("#back").addEventListener("click", ()=>{ if(qi>0){ qi--; render(); } });
+  $("#again").addEventListener("click", ()=>{
+    qi = 0; answers = [];
+    uid = "BR-" + String(Math.floor(Math.random()*9000)+1000);
+    render(); show("quiz");
+  });
+  $("#copy").addEventListener("click", async ()=>{
+    const roles = Array.prototype.map.call(document.querySelectorAll("#roles .chip"), e=>e.textContent).join(" / ");
+    const txt = "【兄弟山 · 人格档案】" + $("#name").textContent + " · " + $("#alias").textContent +
+                "（" + roles + "）｜匹配度 " + $("#pct").textContent +
+                "\n" + $("#quote").textContent + "\n「长子不上堂，兄弟满山岗。」";
+    try{ await navigator.clipboard.writeText(txt); toast("已复制到剪贴板"); }
+    catch(e){
+      const ta = document.createElement("textarea");
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); toast("已复制到剪贴板"); } catch(_){ toast("复制失败，请手动选择"); }
+      document.body.removeChild(ta);
+    }
+  });
+  document.addEventListener("keydown", e=>{
+    if(!screens.quiz.classList.contains("on")) return;
+    if(e.key >= "1" && e.key <= "4"){
+      const i = parseInt(e.key,10)-1;
+      if(i < QUESTIONS[qi].a.length) pick(i);
+    }
+    if(e.key === "Backspace" && qi>0){ e.preventDefault(); qi--; render(); }
+  });
+})();
+</script>
+</body>
+</html>
